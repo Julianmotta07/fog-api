@@ -16,46 +16,56 @@ red interna de Docker.
 - `GET  /health`  → estado del modelo.
 - `POST /predict` → recibe el JSON DGI y devuelve `{"ensemble": [...]}`.
 
-## Opción A — Servicio dentro del compose de la plataforma (recomendada)
+## Integración en VIMOV (como submódulo — recomendada)
 
-En el `docker-compose.yml` de VIMOV ya se agregó un servicio `fog-api` cuyo
-`build` apunta a este repo como directorio hermano (`../fog-api`). Basta con
-clonar ambos repos lado a lado en el servidor:
+Igual que `taping-toe`, este servicio se engancha a VIMOV como **submódulo de git**.
+Una vez el repo esté en la organización (`i2tResearch/fog-api`), desde la raíz de VIMOV:
+
+```bash
+# 1) Agregar el submódulo bajo services/ (misma convención que taping-toe)
+git submodule add git@github.com:i2tResearch/fog-api.git services/fog-api
+
+# 2) En el docker-compose.yml de VIMOV, cambiar el build del servicio fog-api:
+#    -  build: ../fog-api
+#    +  build: ./services/fog-api
+
+git add .gitmodules services/fog-api docker-compose.yml
+git commit -m "chore: add fog-api as submodule under services/"
+```
+
+Para inicializar el submódulo al clonar VIMOV (o en el servidor):
+
+```bash
+git submodule sync --recursive
+git submodule update --init --recursive
+```
+
+> El runtime de VIMOV ya está listo y **no cambia** con el submódulo: el servicio se
+> llama `fog-api` y se alcanza por la red interna con `FOG_API_URL=http://fog-api:5001`.
+
+### Estado actual de la rama de VIMOV
+
+Mientras el repo no esté en la organización, la rama de VIMOV referencia este servicio
+como **directorio hermano** (`build: ../fog-api`), clonando ambos repos lado a lado:
 
 ```
 /ruta/i2t/
-├── vimov/        # repo de la plataforma
+├── vimov/
 └── fog-api/      # este repo
 ```
 
-y levantar todo con el compose de VIMOV:
+Al moverlo a la organización, solo se aplica el cambio a submódulo descrito arriba
+(`build: ../fog-api` → `build: ./services/fog-api`).
 
-```bash
-cd vimov
-docker compose up -d --build
-```
+## Alternativa — despliegue independiente con red compartida
 
-Al estar en el mismo compose comparten la red por defecto, y VIMOV resuelve el
-host `fog-api`. La variable en el `.env` de VIMOV queda:
-
-```
-FOG_API_URL=http://fog-api:5001
-```
-
-## Opción B — Despliegue independiente con red compartida
-
-Si se prefiere desplegar este servicio por separado:
+Si se prefiere desplegar este servicio por separado del compose de VIMOV:
 
 ```bash
 # 1) Crear una red compartida (una sola vez)
 docker network create vimov-net
-
-# 2) En el docker-compose.yml de este repo, descomentar los bloques "networks"
-#    (tanto en el servicio como al final del archivo).
-
-# 3) En el docker-compose de VIMOV, conectar su servicio a la misma red externa
-#    vimov-net.
-
+# 2) Descomentar los bloques "networks" del docker-compose.yml de este repo.
+# 3) Conectar el servicio de VIMOV a esa misma red externa vimov-net.
 docker compose up -d --build
 ```
 
