@@ -46,9 +46,15 @@ def _get_probs(model, scaler, feature_dicts: list) -> tuple:
     timestamps    = [fd.get("timestamp", 0.0) for fd in feature_dicts]
     clean_dicts   = [{k: v for k, v in fd.items() if k != "timestamp"} for fd in feature_dicts]
     X             = _build_matrix(clean_dicts, feature_names)
+    # Ventanas no calculables (señal insuficiente) producen features NaN/Inf.
+    # Las marcamos para EXCLUIRLAS del resultado: no se inventa ninguna predicción.
+    # El nan_to_num es solo para que el modelo (p. ej. SVC) no falle al evaluar la
+    # matriz; las probabilidades de esas filas se descartan más adelante.
+    invalid       = ~np.isfinite(X).all(axis=1)
+    X             = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
     X_scaled      = scaler.transform(X)
     probs         = model.predict_proba(X_scaled)[:, 1]
-    return timestamps, probs
+    return timestamps, probs, invalid
 
 
 class FogPredictor:
@@ -77,12 +83,15 @@ class FogPredictor:
             n          = min(len(features_b), len(features_c))
             features_b = features_b[:n]
             features_c = features_c[:n]
-            timestamps, probs_b = _get_probs(self._model_b, self._scaler_b, features_b)
-            _,          probs_c = _get_probs(self._model_c, self._scaler_c, features_c)
+            timestamps, probs_b, invalid_b = _get_probs(self._model_b, self._scaler_b, features_b)
+            _,          probs_c, invalid_c = _get_probs(self._model_c, self._scaler_c, features_c)
             probs = WEIGHT_B * probs_b + WEIGHT_C * probs_c
+            # Excluir las ventanas que no se pudieron calcular en B o en C
+            # (sin inventar valores): simplemente no aparecen en el resultado.
+            valid = ~(invalid_b | invalid_c)
             return [
                 {"timestamp": int(ts), "fog": int(p >= ENSEMBLE_THRESHOLD), "prob": round(float(p), 4)}
-                for ts, p in zip(timestamps, probs)
+                for ts, p, ok in zip(timestamps, probs, valid) if ok
             ]
         except FileNotFoundError as e:
             logger.warning("Modelo no disponible: %s", e)

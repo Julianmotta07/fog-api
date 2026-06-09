@@ -1,0 +1,31 @@
+# docker-compose para la FOG Prediction API.
+#
+# Uso:
+#   - Standalone (pruebas locales):   docker compose up --build
+#       -> queda accesible en http://localhost:5001/health
+#
+#   - Junto a VIMOV en el servidor I2T:
+#       VIMOV la alcanza por el hostname interno de Docker "http://fog-api:5001".
+#       Para que se vean entre sí deben compartir una red de Docker. Hay 2 formas:
+#         a) Definir este servicio dentro del mismo docker-compose de la plataforma
+#            (ver el servicio "fog-api" agregado en el compose de vimov), o
+#         b) Usar una red externa compartida (descomentar el bloque "networks" de abajo
+#            y crearla una vez con:  docker network create vimov-net).
+services:
+  fog-api:
+    build: .
+    image: fog-api:latest
+    container_name: fog-api
+    restart: unless-stopped
+    # Exponer 5001 a otros contenedores de la misma red (no publica al host).
+    expose:
+      - "5001"
+    # Publicar al host SOLO para pruebas locales; en I2T basta la red interna.
+    ports:
+      - "5001:5001"
+    # networks:
+    #   - vimov-net
+
+# networks:
+#   vimov-net:
+#     external: true
