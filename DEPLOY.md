@@ -1,13 +1,13 @@
 # Despliegue de la FOG Prediction API en la infraestructura I2T
 
-Este servicio reemplaza el despliegue externo en Render. Ahora corre **dentro** de
-la misma infraestructura que VIMOV, de modo que **los datos de pacientes nunca
-salen del entorno I2T**: VIMOV llama a la API por la red interna de Docker.
+Este servicio corre **dentro** de la misma infraestructura que VIMOV, de modo que
+**los datos de pacientes nunca salen del entorno I2T**: VIMOV llama a la API por la
+red interna de Docker.
 
 ## Qué incluye
 
 - `Dockerfile` — empaqueta el código fuente y los modelos (`fog/models/*.pkl`,
-  ya versionados en el repo, ~1.2 MB). No requiere "secret files" como en Render.
+  ya versionados en el repo, ~1.2 MB), así que viajan dentro de la imagen.
 - `docker-compose.yml` — levanta el servicio `fog-api` (gunicorn en el puerto `5001`).
 - `.dockerignore` — excluye artefactos innecesarios de la imagen.
 

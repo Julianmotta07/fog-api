@@ -1,8 +1,8 @@
 # FOG Prediction API — imagen para desplegar dentro de la infraestructura I2T,
-# junto a VIMOV (NO en un servicio externo tipo Render).
+# junto a VIMOV (no en un servicio externo).
 #
 # El código fuente y los modelos (fog/models/*.pkl) se empaquetan en la imagen,
-# por lo que NO se requiere subir "secret files" como en Render.
+# por lo que se incluyen directamente sin pasos extra.
 FROM python:3.11.0-slim
 
 # libgomp1: requerido en runtime por xgboost / scikit-learn (OpenMP)
