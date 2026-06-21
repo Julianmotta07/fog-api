@@ -9,6 +9,10 @@ Mapeo deviceId → clave interna:
     LEFT-HAND   → 'arm'   (acc + gyro)
 """
 
+# Lógica de extracción y mapeo de sensores diseñada con apoyo de
+# herramientas de inteligencia artificial generativa (Anthropic, s.f), 
+# revisada y adaptada por el equipo de trabajo.
+
 from collections import defaultdict
 from typing import Optional
 

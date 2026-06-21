@@ -1,3 +1,7 @@
+# Configuración de build y despliegue diseñada con apoyo de herramientas
+# de inteligencia artificial generativa (Anthropic, s.f.), revisada y adaptada 
+# validada por el equipo de trabajo.
+
 # FOG Prediction API — imagen para desplegar dentro de la infraestructura I2T,
 # junto a VIMOV (no en un servicio externo).
 #

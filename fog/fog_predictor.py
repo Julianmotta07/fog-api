@@ -2,6 +2,10 @@
 fog_predictor.py — Ensemble (wB=0.35, wC=0.65, umbral=0.30)
 """
 
+# Lógica de carga de modelos serializados e inferencia del ensemble
+# diseñada con apoyo de herramientas de inteligencia artificial generativa
+# (Anthropic, s.f.), revisada y adaptada por el equipo de trabajo.
+
 import logging
 import os
 from typing import List, Optional

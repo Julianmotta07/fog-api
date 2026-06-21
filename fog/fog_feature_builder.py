@@ -2,6 +2,11 @@
 fog_feature_builder.py — (2s, 75% solapamiento)
 """
 
+# Pipeline de segmentación en ventanas y extracción de características
+# (Freezing Index, entropía wavelet, jerk, coordinación multisensorial)
+# diseñado con apoyo de herramientas de inteligencia artificial generativa
+# (Anthropic, s.f.), revisado y adaptado por el equipo de trabajo.
+
 from typing import List
 
 import numpy as np

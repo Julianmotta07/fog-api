@@ -54,3 +54,25 @@ FOG_API_URL=http://fog-api:5001
 
 La predicción se calcula **al ingerir** el estudio DGI y se persiste en la base de datos
 de VIMOV (`imus.results.vars.fog`); el frontend la lee desde ahí.
+
+## Uso de Inteligencia Artificial Generativa
+
+Durante el desarrollo de este microservicio se utilizaron herramientas de inteligencia
+artificial generativa (Anthropic, s.f.) como apoyo al desarrollo de software.
+
+Estas herramientas se emplearon para:
+
+- Diseñar la estructura inicial de la API de inferencia (endpoints, formato de
+  request/response).
+- Generar propuestas preliminares de implementación del pipeline de extracción de
+  señales, construcción de características y predicción del modelo compuesto.
+- Apoyar la generación de fragmentos iniciales de código relacionados con el
+  procesamiento de solicitudes HTTP y la configuración del despliegue (Docker).
+
+Todas las sugerencias y artefactos generados fueron revisados, adaptados, probados y
+validados por el autor antes de su incorporación al proyecto, garantizando su
+funcionamiento y adecuación a los requerimientos específicos de la solución desarrollada.
+
+**Referencias**
+
+- Anthropic. (s.f.). *Claude*. https://www.anthropic.com

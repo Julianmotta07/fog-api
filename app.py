@@ -3,6 +3,11 @@ app.py — FOG Prediction API
 Expone POST /predict para inferencia del modelo compuesto FOG.
 """
 
+# Estructura de la API (endpoints, manejo de errores y formato de
+# request/response) diseñada con apoyo de herramientas de inteligencia
+# artificial generativa (Anthropic, s.f.), revisada y adaptada 
+# por el equipo de trabajo.
+
 import logging
 import os
 import sys
